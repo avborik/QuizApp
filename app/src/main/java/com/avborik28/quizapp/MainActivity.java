@@ -14,8 +14,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView mTxtQuestion;
     private Button btnTrue, btnWrong;
     private int mQuestionIndex = 0;
+    private int mQuizQuestion;
 
-    private QuizModel[] questonCollection = new QuizModel[] {
+    private QuizModel[] questionCollection = new QuizModel[] {
             new QuizModel(R.string.q1, true),
             new QuizModel(R.string.q2, false),
             new QuizModel(R.string.q3, true),
@@ -35,9 +36,12 @@ public class MainActivity extends AppCompatActivity {
 
         mTxtQuestion = findViewById(R.id.txtQestion);
 
-        QuizModel q1 = questonCollection[mQuestionIndex];
+        QuizModel q1 = questionCollection[mQuestionIndex];
 
-        mTxtQuestion.setText(q1.getmQuestion());
+        mQuizQuestion = q1.getmQuestion();
+
+        mTxtQuestion.setText(mQuizQuestion);
+
 
         btnTrue = findViewById(R.id.btnTrue);
 
@@ -62,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
         btnTrue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                evaluateUserAnswers(true);
+                changeQuestionOnButtonClick();
 
             }
         });
@@ -72,15 +78,34 @@ public class MainActivity extends AppCompatActivity {
           btnWrong.setOnClickListener(new View.OnClickListener() {
               @Override
               public void onClick(View v) {
-                  if(v.getId() == R.id.btnFalse){
+                /*  if(v.getId() == R.id.btnFalse){
                       //Log.i("another Listenter", "The false button is tapped");
-                      /*Toast myToastObject = Toast.makeText(getApplicationContext(),"btn False is tapped now",Toast.LENGTH_LONG);
-                      myToastObject.show();*/
+                      *//*Toast myToastObject = Toast.makeText(getApplicationContext(),"btn False is tapped now",Toast.LENGTH_LONG);
+                      myToastObject.show();*//*
                       Toast.makeText(getApplicationContext(),"btn Wrong is tapped now",Toast.LENGTH_LONG).show();
-                  }
+                  }*/
+                  evaluateUserAnswers(false);
+                changeQuestionOnButtonClick();
+
               }
           });
 
          // QuizModel model = new QuizModel(R.string.q1, true);
+    }
+
+    private void changeQuestionOnButtonClick(){
+        mQuestionIndex = (mQuestionIndex + 1) % 10;
+        mQuizQuestion = questionCollection[mQuestionIndex].getmQuestion();
+        mTxtQuestion.setText(mQuizQuestion);
+    }
+
+    private void evaluateUserAnswers(boolean userGuess){
+        boolean currentUserQuestion = questionCollection[mQuestionIndex].ismAnswer();
+
+        if(currentUserQuestion == userGuess){
+            Toast.makeText(getApplicationContext(),R.string.correct_toast_message,Toast.LENGTH_SHORT).show();
+        } else{
+            Toast.makeText(getApplicationContext(),R.string.incorrect_toast_message,Toast.LENGTH_SHORT).show();
+        }
     }
 }
