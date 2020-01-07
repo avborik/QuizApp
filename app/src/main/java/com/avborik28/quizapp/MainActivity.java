@@ -1,7 +1,9 @@
 package com.avborik28.quizapp;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -109,6 +111,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void changeQuestionOnButtonClick(){
         mQuestionIndex = (mQuestionIndex + 1) % 10;
+        if(mQuestionIndex == 0 ){
+            AlertDialog.Builder quizAlert = new AlertDialog.Builder(this);
+            quizAlert.setCancelable(false);
+            quizAlert.setTitle("The quiz is finished");
+            quizAlert.setMessage("Your score is " + mUserScore);
+            quizAlert.setPositiveButton("Finish the quiz", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            });
+            quizAlert.show();
+        }
         mQuizQuestion = questionCollection[mQuestionIndex].getmQuestion();
         mTxtQuestion.setText(mQuizQuestion);
         mProjgressBar.incrementProgressBy(USER_PROGRESS);
