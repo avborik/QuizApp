@@ -6,15 +6,23 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
+
+
     private TextView mTxtQuestion;
     private Button btnTrue, btnWrong;
     private int mQuestionIndex = 0;
     private int mQuizQuestion;
+
+    private ProgressBar mProjgressBar;
+    private TextView mQuizStatsTextView;
+
+    private int mUserScore;
 
     private QuizModel[] questionCollection = new QuizModel[] {
             new QuizModel(R.string.q1, true),
@@ -29,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
             new QuizModel(R.string.q10, false)
     };
 
+    final int USER_PROGRESS = (int) Math.ceil(100.0 / questionCollection.length);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +51,10 @@ public class MainActivity extends AppCompatActivity {
         mQuizQuestion = q1.getmQuestion();
 
         mTxtQuestion.setText(mQuizQuestion);
+
+        mProjgressBar = findViewById(R.id.quizPB);
+
+        mQuizStatsTextView = findViewById(R.id.txtQuizStats);
 
 
         btnTrue = findViewById(R.id.btnTrue);
@@ -97,6 +111,8 @@ public class MainActivity extends AppCompatActivity {
         mQuestionIndex = (mQuestionIndex + 1) % 10;
         mQuizQuestion = questionCollection[mQuestionIndex].getmQuestion();
         mTxtQuestion.setText(mQuizQuestion);
+        mProjgressBar.incrementProgressBy(USER_PROGRESS);
+        mQuizStatsTextView.setText(mUserScore + "");
     }
 
     private void evaluateUserAnswers(boolean userGuess){
@@ -104,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(currentUserQuestion == userGuess){
             Toast.makeText(getApplicationContext(),R.string.correct_toast_message,Toast.LENGTH_SHORT).show();
+            mUserScore = mUserScore + 1;
         } else{
             Toast.makeText(getApplicationContext(),R.string.incorrect_toast_message,Toast.LENGTH_SHORT).show();
         }
